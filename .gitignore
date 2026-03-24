@@ -1,0 +1,20 @@
+# Banco de dados (Privacidade das suas finanças)
+*.db
+*.sqlite3
+
+# Ambientes Virtuais (Pesados e desnecessários no Git)
+venv/
+.venv/
+env/
+
+# Arquivos do Python (Cache e compilados)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configurações de editores
+.vscode/
+.idea/
+
+# Arquivos do Windows
+Thumbs.db
