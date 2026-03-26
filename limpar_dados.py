@@ -1,12 +1,21 @@
 import sqlite3
 
-conexao = sqlite3.connect('registros.db')
-cursor = conexao.cursor()
+import sqlite3
 
-cursor.execute('DELETE FROM registros')
+def limpar_db(nome_arquivo, nome_tabela):
+    try:
+        conn = sqlite3.connect(nome_arquivo)
+        cursor = conn.cursor()
+        cursor.execute(f"DELETE FROM {nome_tabela}")
+        conn.commit()
+        conn.close()
+        print(f"✅ Tabela '{nome_tabela}' limpa no arquivo '{nome_arquivo}'")
+    except sqlite3.OperationalError:
+        print(f"⚠️ Aviso: Tabela '{nome_tabela}' não encontrada em '{nome_arquivo}'")
 
-conexao.commit()
-conexao.close()
+# Chamando para cada um
+limpar_db('registros.db', 'registros')
+limpar_db('bancos.db', 'bancos')
+limpar_db('caixinhas.db', 'caixinhas')
 
-print("✅ Todos os dados foram deletados!")
-print("📊 Tabela 'registros' está vazia agora")
+print("\n🚀 Todos os processos de limpeza finalizados!")
