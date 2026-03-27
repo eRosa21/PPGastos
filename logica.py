@@ -34,8 +34,18 @@ import sqlite3
 def alterar_saldo_banco(conexao,cursor):
     print("Insira o id do banco que você quer adicionar o valor:")
     id_busca = int(input("ID: "))
-    print("Insira o valor que você irá adicionar ao banco:")
-    novo_valor = float(input("Valor: R$ "))
+    print("Você quer adicionar ou subtrair do saldo do banco?")
+    print("1 - Adicionar")
+    print("2 - Subtrair")
+    escolha = input("Escolha (1 ou 2): ")
+    
+    if(escolha == "1"):
+        print("Insira o valor que você irá adicionar ao banco:")
+        novo_valor = float(input("Valor: R$ "))
+    elif(escolha == "2"):
+        print("Insira o valor que você irá subtrair do banco:")
+        novo_valor = float(input("Valor: R$ "))
+        novo_valor = -novo_valor  # Tornar o valor negativo para subtração
     
     cursor.execute('''UPDATE bancos
                    SET saldo_total = saldo_total + ?
