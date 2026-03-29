@@ -42,10 +42,12 @@ def alterar_saldo_banco(conexao,cursor):
     if(escolha == "1"):
         print("Insira o valor que você irá adicionar ao banco:")
         novo_valor = float(input("Valor: R$ "))
+        print(f"R$ {novo_valor} foi adicionado ao banco")
     elif(escolha == "2"):
         print("Insira o valor que você irá subtrair do banco:")
         novo_valor = float(input("Valor: R$ "))
         novo_valor = -novo_valor  # Tornar o valor negativo para subtração
+        print(f"R$ {novo_valor} foi retirado do banco")
     
     cursor.execute('''UPDATE bancos
                    SET saldo_total = saldo_total + ?
