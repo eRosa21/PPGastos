@@ -1,7 +1,8 @@
 import sqlite3
-from logica import alterar_saldo_banco
+from logica import menu
+from logica import criar_caixinha
 
-conexao = sqlite3.connect('bancos.db')
+conexao = sqlite3.connect('bancos_e_caixinhas.db')
 cursor = conexao.cursor()
 
 cursor.execute("PRAGMA foreign_keys = ON;")
@@ -25,9 +26,10 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS caixinhas (
 cursor.execute('''INSERT OR IGNORE INTO bancos 
                (nome, saldo_total, fatura_atual) VALUES 
                ('Nubank', 0000.0, 000.0)''')
-            
+
+
 conexao.commit()    
 
-alterar_saldo_banco(conexao, cursor)
+menu(conexao, cursor)
     
 conexao.close()
