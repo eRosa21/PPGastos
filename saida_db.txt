@@ -1,0 +1,6 @@
+--- BANCOS ---
+(1, 'Nubank', 811.0, 0.0)
+
+--- CAIXINHAS ---
+(1, 'Viagem', 0.0, 1)
+(2, 'Viagens', 500.0, 1)

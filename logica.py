@@ -53,17 +53,23 @@ def alterar_saldo_banco(conexao,cursor):
         print("Insira o valor que você irá adicionar ao banco:")
         novo_valor = float(input("Valor: R$ "))
         print(f"R$ {novo_valor} foi adicionado ao banco")
+    
     elif(escolha2 == "2"):
         print("Insira o valor que você irá subtrair do banco:")
         novo_valor = float(input("Valor: R$ "))
         novo_valor = -novo_valor 
         print(f"R$ {novo_valor} foi retirado do banco")
-    
+
+        
     cursor.execute('''UPDATE bancos
                    SET saldo_total = saldo_total + ?
                    WHERE id = ?''', (novo_valor, id_busca))
     conexao.commit()
-    print(f"Saldo do banco ID {id_busca} atualizado com sucesso!")
+    dados_bancos = cursor.execute('''SELECT nome, saldo_total FROM bancos WHERE id = ?''', (id_busca,)).fetchone()
+    nome_banco = dados_bancos[0]
+    saldo_banco = dados_bancos[1]
+    print(f"Saldo do banco {nome_banco} atualizado com sucesso!")
+    print(f"saldo atual do banco {nome_banco}: R$ {saldo_banco}")
 
 def alterar_saldo_caixinha(conexao,cursor):
     print("Escolha a caixinha em que você quer alterar o saldo")
@@ -87,6 +93,11 @@ def alterar_saldo_caixinha(conexao,cursor):
                    SET valor_reservado = valor_reservado + ?
                    WHERE id = ?''', (novo_valorC, id_buscaC))
     conexao.commit()
-    print(f"Saldo da caixinha ID {id_buscaC} atualizado com sucesso!")
+
+    dados_caixinha = cursor.execute('''SELECT nome, valor_reservado FROM caixinhas WHERE id = ?''', (id_buscaC,)).fetchone()
+    nome_caixinha = dados_caixinha[0]
+    saldo_caixinha = dados_caixinha[1]
+    print(f"Saldo da caixinha {nome_caixinha} atualizado com sucesso!")
+    print(f"saldo atual da caixinha {nome_caixinha}: R$ {saldo_caixinha}")
     
     
