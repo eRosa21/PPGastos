@@ -6,7 +6,8 @@ def menu(conexao, cursor):
     print("1 - Alterar saldo de um Banco")
     print("2 - Alterar saldo de uma Caixinha")
     print("3 - Criar uma nova Caixinha")
-    escolha1 = input("Escolha (1, 2 ou 3): ")
+    print("4 - Registrar um Gasto")
+    escolha1 = input("Escolha (1, 2, 3 ou 4): ")
 
     if(escolha1 == "1"):
         alterar_saldo_banco(conexao,cursor)
@@ -14,6 +15,34 @@ def menu(conexao, cursor):
         alterar_saldo_caixinha(conexao,cursor)
     elif(escolha1 == "3"):
         criar_caixinha(conexao,cursor)
+    elif(escolha1 == "4"):
+        registrar_gasto(conexao,cursor)
+
+def registrar_gasto(conexao,cursor):
+    print("\n--- Registrar Gasto ---")
+    print("Digite o nome do gasto:")
+    nome = input("Nome: ")
+    print("Digite o valor do gasto:")
+    valor = float(input("Valor: R$ "))
+    print("Digite a data do gasto:")
+    data = input("Data: ")
+    print("Digite o tipo do gasto:")
+    tipo = input("Tipo: ")
+    print("Digite a forma de pagamento:")
+    pagamento =input('Forma de pagamento: ')
+    print("Digite o ID do banco ao qual este gasto pertence (ex: 1 para o Nubank):")
+    id_banco = int(input("ID do Banco: "))
+    
+    try:
+        cursor.execute('''INSERT INTO gastos (nome, valor, data, tipo, pagamento, id_banco) VALUES (?, ?, ?, ?, ?, ?)''', (nome, valor, data, tipo, pagamento, id_banco))
+        conexao.commit()
+        print(f"Gasto '{nome}' registrado com sucesso!")
+    except sqlite3.IntegrityError as e:
+        msg_erro = str(e).lower()
+        if "foreign key" in msg_erro:
+            print(f"\nErro: O banco com ID {id_banco} não existe! Verifique o ID do banco e tente de novo.")
+        else:
+            print(f"\nErro de integridade no banco de dados: {e}")
 
 def criar_caixinha(conexao,cursor):
     while True:
