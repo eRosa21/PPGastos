@@ -1,22 +1,6 @@
 import sqlite3
 
-    
-def menu(conexao, cursor):
-    print("O que você deseja fazer?")
-    print("1 - Alterar saldo de um Banco")
-    print("2 - Alterar saldo de uma Caixinha")
-    print("3 - Criar uma nova Caixinha")
-    print("4 - Registrar um Gasto")
-    escolha1 = input("Escolha (1, 2, 3 ou 4): ")
 
-    if(escolha1 == "1"):
-        alterar_saldo_banco(conexao,cursor)
-    elif(escolha1 == "2"):
-        alterar_saldo_caixinha(conexao,cursor)
-    elif(escolha1 == "3"):
-        criar_caixinha(conexao,cursor)
-    elif(escolha1 == "4"):
-        registrar_gasto(conexao,cursor)
 
 def registrar_gasto(conexao,cursor):
     print("\n--- Registrar Gasto ---")
@@ -93,6 +77,7 @@ def alterar_saldo_banco(conexao,cursor):
     cursor.execute('''UPDATE bancos
                    SET saldo_total = saldo_total + ?
                    WHERE id = ?''', (novo_valor, id_busca))
+                   
     conexao.commit()
     dados_bancos = cursor.execute('''SELECT nome, saldo_total FROM bancos WHERE id = ?''', (id_busca,)).fetchone()
     nome_banco = dados_bancos[0]
@@ -128,5 +113,44 @@ def alterar_saldo_caixinha(conexao,cursor):
     saldo_caixinha = dados_caixinha[1]
     print(f"Saldo da caixinha {nome_caixinha} atualizado com sucesso!")
     print(f"saldo atual da caixinha {nome_caixinha}: R$ {saldo_caixinha}")
+    conexao.commit()
+
+def transferir_saldo(conexao, cursor):
+    print("\n--- Transferir Saldo ---")
+    id_origem = int(input("ID da conta de origem: "))
+    id_destino = int(input("ID da conta de destino: "))
+    valor = float(input("Valor: R$ "))
     
-    
+    try:
+       
+        with conexao:
+            # 1. Verificar se a conta de origem tem saldo suficiente (Opcional, mas boa prática)
+            cursor.execute("SELECT saldo_total FROM bancos WHERE id = ?", (id_origem,))
+            resultado = cursor.fetchone()
+            
+            if resultado is None:
+                print("❌ Erro: Conta de origem não encontrada.")
+                return
+                
+            saldo_atual = resultado[0]
+            
+            if saldo_atual < valor:
+                print("❌ Erro: Saldo insuficiente para transferência.")
+                return
+
+            cursor.execute("SELECT id FROM bancos WHERE id = ?", (id_destino,))
+            resultado_destino = cursor.fetchone()
+            
+            if resultado_destino is None:
+                print("❌ Erro: Conta de destino não encontrada.")
+                return
+
+            cursor.execute("UPDATE bancos SET saldo_total = saldo_total - ? WHERE id = ?", (valor, id_origem))
+            cursor.execute("UPDATE bancos SET saldo_total = saldo_total + ? WHERE id = ?", (valor, id_destino))
+            
+            print(f"✅ Transferência de R$ {valor} realizada com sucesso!")
+
+    except Exception as e:
+        print(f"⚠️ Erro crítico na transferência: {e}")
+        # O Python/SQLite fará o ROLLBACK automático aqui por causa do 'with conexao'
+
