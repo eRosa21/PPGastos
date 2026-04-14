@@ -1,13 +1,13 @@
-# Banco de dados (Privacidade das suas finanças)
+# Banco de dados 
 *.db
 *.sqlite3
 
-# Ambientes Virtuais (Pesados e desnecessários no Git)
+# Ambientes Virtuais
 venv/
 .venv/
 env/
 
-# Arquivos do Python (Cache e compilados)
+# Arquivos do Python
 __pycache__/
 *.py[cod]
 *$py.class
