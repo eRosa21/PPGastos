@@ -16,7 +16,7 @@ Git & GitHub: Versionamento de código e hospedagem.
 ✨ Funcionalidades (em desenvolvimento)
 [x] Estrutura inicial e integração com banco de dados.
 
-[ ] Cadastro de novos gastos com descrição e valor.
+[x] Cadastro de novos gastos com descrição e valor.
 
 [ ] Filtro de gastos por categoria.
 
