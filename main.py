@@ -27,9 +27,16 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS gastos(
                 tipo TEXT NOT NULL,
                 pagamento TEXT NOT NULL,
                 id_banco INTEGER NOT NULL,
+                is_gasto INTEGER DEFAULT 1,
                 FOREIGN KEY (id_banco) REFERENCES bancos(id)
                     ON DELETE CASCADE   
                 )''')    
+
+try:
+    cursor.execute("ALTER TABLE gastos ADD COLUMN is_gasto INTEGER DEFAULT 1")
+except sqlite3.OperationalError:
+
+    pass
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS caixinhas (
                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

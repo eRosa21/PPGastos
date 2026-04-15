@@ -16,9 +16,10 @@ def registrar_gasto(conexao,cursor):
     pagamento =input('Forma de pagamento: ')
     print("Digite o ID do banco ao qual este gasto pertence (ex: 1 para o Nubank):")
     id_banco = int(input("ID do Banco: "))
+
     
     try:
-        cursor.execute('''INSERT INTO gastos (nome, valor, data, tipo, pagamento, id_banco) VALUES (?, ?, ?, ?, ?, ?)''', (nome, valor, data, tipo, pagamento, id_banco))
+        cursor.execute('''INSERT INTO gastos (nome, valor, data, tipo, pagamento, id_banco, is_gasto) VALUES (?, ?, ?, ?, ?, ?, 1)''', (nome, valor, data, tipo, pagamento, id_banco))
         conexao.commit()
         print(f"Gasto '{nome}' registrado com sucesso!")
     except sqlite3.IntegrityError as e:
@@ -124,7 +125,7 @@ def transferir_saldo(conexao, cursor):
     try:
        
         with conexao:
-            # 1. Verificar se a conta de origem tem saldo suficiente (Opcional, mas boa prática)
+            # 1. Verificar se a conta de origem tem saldo suficiente 
             cursor.execute("SELECT saldo_total FROM bancos WHERE id = ?", (id_origem,))
             resultado = cursor.fetchone()
             
@@ -148,9 +149,16 @@ def transferir_saldo(conexao, cursor):
             cursor.execute("UPDATE bancos SET saldo_total = saldo_total - ? WHERE id = ?", (valor, id_origem))
             cursor.execute("UPDATE bancos SET saldo_total = saldo_total + ? WHERE id = ?", (valor, id_destino))
             
+            # Registra a movimentação no histórico de gastos como "transferência interna" (is_gasto = 0)
+            from datetime import date
+            data_atual = date.today().strftime("%d/%m/%Y")
+            descricao = f"Transferência para conta {id_destino}"
+            cursor.execute('''INSERT INTO gastos (nome, valor, data, tipo, pagamento, id_banco, is_gasto) 
+                              VALUES (?, ?, ?, ?, ?, ?, 0)''', 
+                           (descricao, valor, data_atual, "Transferência Interna", "Transferência", id_origem))
+            
             print(f"✅ Transferência de R$ {valor} realizada com sucesso!")
 
     except Exception as e:
         print(f"⚠️ Erro crítico na transferência: {e}")
-        # O Python/SQLite fará o ROLLBACK automático aqui por causa do 'with conexao'
 
