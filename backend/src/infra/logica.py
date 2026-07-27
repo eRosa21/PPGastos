@@ -1,5 +1,5 @@
 import sqlite3
-from models import get_connection
+from entities.models import get_connection
     
 def registrar_gasto(conexao,cursor):
     print("\n--- Registrar Gasto ---")

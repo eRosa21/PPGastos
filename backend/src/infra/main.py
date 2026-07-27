@@ -1,5 +1,5 @@
 import sqlite3
-from models import get_connection
+from entities.models import get_connection
 from logica import (
     alterar_saldo_banco,
     alterar_saldo_caixinha,
