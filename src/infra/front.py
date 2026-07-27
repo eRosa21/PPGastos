@@ -1,10 +1,15 @@
 import flet as ft
 
 def main(page: ft.Page):
+    page.theme_mode = ft.ThemeMode.LIGHT
+    page.title = "PPGastos"   
+    page.window.maximized = True
+    page.window.center = True
+    
 
     def add_task(e):
-        print("R$: "+ new_task.value)
-        new_task.value = " "
+        print("R$: " + new_task.value)
+        new_task.value = ""
         page.update()
 
     new_task = ft.TextField(hint_text="R$: ", expand = True )
