@@ -9,7 +9,9 @@ Python 3.x: Linguagem principal do projeto.
 
 Flet: Framework para construção de interfaces (GUI) baseadas em Flutter.
 
-SQLite: Banco de dados leve para armazenamento local dos registros.
+SQLALCHEMY: Banco de dados leve para armazenamento local dos registros.
+
+Postgresql: Gerenciamento e visualização do banco de dados. 
 
 Git & GitHub: Versionamento de código e hospedagem.
 
@@ -34,11 +36,11 @@ git clone https://github.com/eRosa21/PPGastos.git
 
 (Certifique-se de ter o Python instalado)
 
-pip install flet
+pip install -r requirements.txt
 
 3. Execute a aplicação:
 
-python main.py
+uvicorn main:app --reload
 
 
 👤 Autor
