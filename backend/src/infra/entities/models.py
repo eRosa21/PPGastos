@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
-from backend.src.infra.database.database import Base
+from database.database import Base
 
 class Banco(Base):
     __tablename__ = "bancos"
@@ -20,3 +20,4 @@ class Gastos(Base):
 class Caixinhas(Base):
     __tablename__ = "caixinhas"
     id = Column("id",Integer, primary_key=True, index=True)
+    
