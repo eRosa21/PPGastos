@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 class Banco(Base):
     __tablename__ = "bancos"
     id = Column("id",Integer, primary_key=True, index=True)
-    nome = Column("banco",String, unique=True, nullable=False)
+    nome = Column("banco",String, nullable=False)
     saldo = Column("saldo",Float, nullable=False)
     fatura = Column("fatura",Float, nullable=False)
     
