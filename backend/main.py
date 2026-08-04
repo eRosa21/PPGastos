@@ -17,9 +17,12 @@ load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
-
 app = FastAPI()
 
+@app.get("/")
+def root():
+    return {"status": "ok"}
+
 if __name__ == "__main__":
-    port = int(os.environ.get("API_PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=8001,reload = True)
+    port = int(os.environ.get("API_PORT", 8001))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
