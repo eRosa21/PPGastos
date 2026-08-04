@@ -13,12 +13,12 @@ async def autenticar():
 
 
 @auth_router.post("/registro")
-async def registrar(email: str, senha: str,nome:str,db: Session = Depends(get_db)):
+async def registrar(nome:str,email: str, senha: str,db: Session = Depends(get_db)):
     usuario = db.query(Usuario).filter(Usuario.email == email).first()
     if usuario:
         return {"Mensagem": "Usuário já registrado."}
     else:
-        novo_usuario = Usuario(email, senha,nome)
+        novo_usuario = Usuario(nome, email, senha)
         db.add(novo_usuario)
         db.commit()
         
