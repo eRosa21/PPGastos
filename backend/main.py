@@ -12,12 +12,18 @@ from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 from src.infra.database.database import get_db,engine,Base
 from src.infra.entities.models import Banco,Gastos,Caixinhas
+import requests
 
 load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+from controllers.auth_ctrl import auth_router
+
+app.include_router(auth_router)
 
 @app.get("/")
 def root():
