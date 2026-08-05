@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 from src.infra.database.database import get_db,engine,Base
 from src.infra.entities.models import Banco,Gastos,Caixinhas
+from controllers.dependencies import catch_session
 import requests
 
 load_dotenv()
