@@ -8,4 +8,4 @@ def catch_session():
         session = Session() 
         yield session
     finally:
-        db.close()
+        session.close()
