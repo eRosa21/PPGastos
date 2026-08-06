@@ -3,6 +3,18 @@ from database.database import Base
 from sqlalchemy.orm import relationship
 #from sqlalchemy_utils.types import ChoiceType
 
+class Usuario(Base):
+    __tablename__ = "usuarios"
+    id = Column("id",Integer, primary_key=True, index=True)
+    nome = Column("nome",String, nullable=False)
+    email = Column("email",String, nullable=False)
+    senha = Column("senha",String, nullable=False)
+
+    def __init__(self, nome:str, email:str, senha:str):
+        self.nome = nome
+        self.email = email
+        self.senha = senha
+    
 class Banco(Base):
     __tablename__ = "bancos"
     id = Column("id",Integer, primary_key=True, index=True)
