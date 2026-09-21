@@ -21,12 +21,12 @@ async def autenticar():
 async def registrar(nome:str,email: str, senha: str,session = Depends(get_db)):
     usuario = session.query(Usuario).filter(Usuario.email == email).first()
     if usuario:
-        return {"Mensagem": "Usuário já registrado."}
+        raise HTTPException(status_code=400, detail="Email já cadastrado.")
     else:
         crypted_senha = bcrypt_context.hash(senha)
         novo_usuario = Usuario(nome=nome, email=email, senha=crypted_senha)
         session.add(novo_usuario)
         session.commit()
         
-        return {"Mensagem": "Usuário registrado com sucesso."}
+        raise HTTPException(status_code=200, detail="Usuário registrado com sucesso.")
     
