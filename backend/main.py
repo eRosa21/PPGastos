@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import uvicorn
 import requests
+from dotenv import load_dotenv
 # Adiciona a pasta infra ao path, para que 'from database.database import ...' funcione
 INFRA_PATH = Path(__file__).resolve().parent / "src" / "infra"
 sys.path.append(str(INFRA_PATH))
@@ -17,9 +18,11 @@ from controllers.dependencies import catch_session
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+print("API conectada em:", engine.url.render_as_string(hide_password=True))
 
-Base.metadata.create_all(bind=engine)
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACESS_TOKEN_EXPIRE_MINUTES"))
 
 app = FastAPI()
 
