@@ -2,7 +2,8 @@ import os
 import sys
 from pathlib import Path
 import uvicorn
-
+import requests
+from dotenv import load_dotenv
 # Adiciona a pasta infra ao path, para que 'from database.database import ...' funcione
 INFRA_PATH = Path(__file__).resolve().parent / "src" / "infra"
 sys.path.append(str(INFRA_PATH))
@@ -12,12 +13,24 @@ from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 from src.infra.database.database import get_db,engine,Base
 from src.infra.entities.models import Banco,Gastos,Caixinhas
+from controllers.dependencies import catch_session
+#from passlib.context import CryptContext
 
 load_dotenv()
 
-Base.metadata.create_all(bind=engine)
+print("API conectada em:", engine.url.render_as_string(hide_password=True))
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACESS_TOKEN_EXPIRE_MINUTES"))
 
 app = FastAPI()
+
+#bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+from controllers.auth_ctrl import auth_router
+
+app.include_router(auth_router)
 
 @app.get("/")
 def root():
