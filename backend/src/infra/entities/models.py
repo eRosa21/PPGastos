@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Boolean
-from database.database import Base
+from src.infra.database.database import Base
 from sqlalchemy.orm import relationship
 
 class Usuario(Base):
