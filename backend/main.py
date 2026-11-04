@@ -3,8 +3,7 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from src.infra.database.database import get_db,engine,Base
-from src.infra.entities.models import Banco,Gastos,Caixinhas
-
+from src.infra.entities.models import Banco, Gastos, Caixinhas, Usuario
 load_dotenv()
 
 #print("API conectada em:", engine.url.render_as_string(hide_password=True))
@@ -16,6 +15,8 @@ ACESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACESS_TOKEN_EXPIRE_MINUTES"))
 app = FastAPI()
 
 from controllers.auth_ctrl import auth_router
+
+Base.metadata.create_all(bind=engine)
 
 app.include_router(auth_router)
 

@@ -10,12 +10,14 @@ class Usuario(Base):
     email = Column("email", String(150), nullable=False) 
     senha = Column("senha", String(255), nullable=False) 
     ativo = Column('ativo', Boolean)
+    admin = Column('admin', Boolean, default=False) 
 
-    def __init__(self, nome: str, email: str, senha: str, ativo = True):
+    def __init__(self, nome: str, email: str, senha: str, ativo = True, admin = False):
         self.nome = nome
         self.email = email
         self.senha = senha
         self.ativo = ativo
+        self.admin = admin  
     
 class Banco(Base):
     __tablename__ = "bancos"
