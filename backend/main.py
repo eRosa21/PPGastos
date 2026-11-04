@@ -16,8 +16,6 @@ app = FastAPI()
 
 from controllers.auth_ctrl import auth_router
 
-Base.metadata.create_all(bind=engine)
-
 app.include_router(auth_router)
 
 @app.get("/")

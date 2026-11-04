@@ -15,10 +15,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 INFRA_PATH = PROJECT_ROOT / "backend" / "src" / "infra"
 
 sys.path.append(str(PROJECT_ROOT))
-sys.path.append(str(INFRA_PATH))
+sys.path.append(str(PROJECT_ROOT / "backend"))
 
 
-from backend.src.infra.entities.models import Base
+from src.infra.entities.models import Base
 
 
 # Aponta explicitamente para o .env na raiz, independente de onde o comando é executado

@@ -52,7 +52,7 @@ async def registrar(usuario_schema: UsuarioSchema, session = Depends(get_db)):
             nome=usuario_schema.nome,
             email=usuario_schema.email,
             senha=crypted_senha,
-            ativo=usuario_schema.ativo,
+            ativo=True,
             admin=False,
         )
         session.add(novo_usuario)

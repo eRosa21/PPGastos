@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Boolean, UniqueConstraint
 from src.infra.database.database import Base
 from sqlalchemy.orm import relationship
 
 class Usuario(Base):
     __tablename__ = "usuarios"
+    __table_args__ = (UniqueConstraint("email", name="uq_usuarios_email"),)
     
     id = Column("id", Integer, primary_key=True, index=True)
     nome = Column("nome", String(100), nullable=False)  
