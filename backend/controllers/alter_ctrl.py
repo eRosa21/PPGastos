@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from controllers.dependencies import verificar_token, catch_session
 from schemas import UsuarioSchema
-from src.infra.entities.models import Gastos
+from src.infra.entities.models import Gastos, Banco
 from dotenv import load_dotenv
 from controllers.banco_ctrl import banco_router
 from schemas import GastoSchema, BancoSchema
@@ -22,8 +22,17 @@ async def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(catch_s
         tipo=gasto.tipo,
         id_banco=gasto.id_banco
     )
+        
+    ## removendo o valor do gasto do saldo do banco
+    banco = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
+        {"saldo": Banco.saldo - gasto.valor}
+    )
+    if not banco:
+        raise HTTPException(status_code=404, detail="Banco não registrado.")
+    
     session.add(novo_gasto)
-    session.commit()    
+    session.commit()
+  
     return  {"Gasto adicionado com sucesso."}
 
 @alter_router.delete("/remover-gasto/{gasto_id}")
@@ -34,6 +43,7 @@ async def remover_gasto(gasto_id: int, session: Session = Depends(catch_session)
     
     session.delete(gasto)
     session.commit()
+    
     return {
         f"Gasto removido com sucesso."
         }
