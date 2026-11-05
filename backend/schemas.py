@@ -15,5 +15,18 @@ class LoginSchema(BaseModel):
     
     class Config:
         from_attributes = True
+
+class GastoSchema(BaseModel):
+    nome: str
+    valor: float
+    tipo: str
+    id_banco: int
+
+
+class BancoSchema(BaseModel):
+    nome: str
+    saldo: Optional[float] = 0 
+    fatura: Optional[float] = 0
+    
      
     
