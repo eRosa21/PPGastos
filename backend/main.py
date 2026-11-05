@@ -16,8 +16,11 @@ app = FastAPI()
 
 from controllers.auth_ctrl import auth_router
 from controllers.alter_ctrl import alter_router
+from controllers.banco_ctrl import banco_router
+
 app.include_router(auth_router)
 app.include_router(alter_router)
+app.include_router(banco_router)
 
 @app.get("/")
 def root():
