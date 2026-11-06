@@ -24,6 +24,7 @@ app.include_router(auth_router)
 app.include_router(alter_router)
 app.include_router(banco_router)
 
+
 @app.get("/")
 def root():
     return {"status": "ok"}
