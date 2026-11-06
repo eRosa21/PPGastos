@@ -11,18 +11,22 @@ Flet: Framework para construção de interfaces (GUI) baseadas em Flutter.
 
 SQLALCHEMY: Banco de dados leve para armazenamento local dos registros.
 
-Postgresql: Gerenciamento e visualização do banco de dados. 
+MySQL Workbench: Gerenciamento e visualização do banco de dados. 
 
 Git & GitHub: Versionamento de código e hospedagem.
 
 ✨ Funcionalidades (em desenvolvimento)
-[x] Estrutura inicial e integração com banco de dados.
+[X] Estrutura inicial e integração com banco de dados.
 
-[x] Cadastro de novos gastos com descrição e valor.
+[ ] Cadastro de novos gastos com descrição e valor.
+
+[ ] Autenticação de usuários.
 
 [ ] Filtro de gastos por categoria.
 
 [ ] Dashboard visual com resumo mensal.
+
+[ ] Integração com OpenFinance
 
 
 🛠️ Como Executar o Projeto
