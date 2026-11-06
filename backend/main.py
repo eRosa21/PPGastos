@@ -6,6 +6,8 @@ from src.infra.database.database import get_db,engine,Base
 from src.infra.entities.models import Banco, Gastos, Caixinhas, Usuario
 load_dotenv()
 
+##Base.metadata.create_all(bind=engine)
+
 #print("API conectada em:", engine.url.render_as_string(hide_password=True))
 
 SECRET_KEY = os.getenv("SECRET_KEY")

@@ -20,15 +20,22 @@ async def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(catch_s
         nome=gasto.nome,
         valor=gasto.valor,
         tipo=gasto.tipo,
-        id_banco=gasto.id_banco
+        id_banco=gasto.id_banco,
+        meio_pagamento=gasto.meio_pagamento
     )
-        
-    ## removendo o valor do gasto do saldo do banco
-    banco = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
-        {"saldo": Banco.saldo - gasto.valor}
-    )
+    meio_pagamento = gasto.meio_pagamento
+    banco = session.get(Banco, gasto.id_banco)
     if not banco:
         raise HTTPException(status_code=404, detail="Banco não registrado.")
+    
+    if meio_pagamento == "débito":
+        banco = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
+        {"saldo": Banco.saldo - gasto.valor}
+    )
+    elif meio_pagamento == "crédito":
+        banco = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
+            {"fatura": Banco.fatura + gasto.valor}
+        )
     
     session.add(novo_gasto)
     session.commit()

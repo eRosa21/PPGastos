@@ -21,6 +21,7 @@ class GastoSchema(BaseModel):
     valor: float
     tipo: str
     id_banco: int
+    meio_pagamento: Optional[str] = None
 
 
 class BancoSchema(BaseModel):

@@ -41,12 +41,14 @@ class Gastos(Base):
     valor = Column("valor", Float, nullable=False)
     tipo = Column("tipo", String(255), nullable=False)
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
-    
-    def __init__ (self, nome: str, valor: float, tipo: str, id_banco: int):
+    meio_pagamento = Column("meio_pagamento", String(255), nullable=True)
+
+    def __init__ (self, nome: str, valor: float, tipo: str, id_banco: int, meio_pagamento: str = None):
         self.nome = nome
         self.valor = valor
         self.tipo = tipo
         self.id_banco = id_banco
+        self.meio_pagamento = meio_pagamento
 
 class Caixinhas(Base):
     __tablename__ = "caixinhas"
