@@ -1,3 +1,4 @@
+from datetime import date
 from pydantic import BaseModel
 from typing import Optional
 
@@ -22,12 +23,14 @@ class GastoSchema(BaseModel):
     tipo: str
     id_banco: int
     meio_pagamento: Optional[str] = None
+    dia: date
 
 
 class BancoSchema(BaseModel):
     nome: str
     saldo: Optional[float] = 0 
     fatura: Optional[float] = 0
-    
-     
-    
+
+class MeioPagamentoSchema(BaseModel):
+    debito: "débito"
+    credito: "crédito"  

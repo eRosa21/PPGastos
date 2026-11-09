@@ -1,3 +1,4 @@
+from datetime import date
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Boolean, UniqueConstraint
 from src.infra.database.database import Base
 from sqlalchemy.orm import relationship
@@ -42,13 +43,23 @@ class Gastos(Base):
     tipo = Column("tipo", String(255), nullable=False)
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
     meio_pagamento = Column("meio_pagamento", String(255), nullable=True)
+    dia = Column("dia", Date, nullable=False)
 
-    def __init__ (self, nome: str, valor: float, tipo: str, id_banco: int, meio_pagamento: str = None):
+    def __init__(
+        self,
+        nome: str,
+        valor: float,
+        tipo: str,
+        id_banco: int,
+        dia: date,
+        meio_pagamento: str = None,
+    ):
         self.nome = nome
         self.valor = valor
         self.tipo = tipo
         self.id_banco = id_banco
         self.meio_pagamento = meio_pagamento
+        self.dia = dia
 
 class Caixinhas(Base):
     __tablename__ = "caixinhas"
