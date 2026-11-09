@@ -16,11 +16,12 @@ MySQL Workbench: Gerenciamento e visualização do banco de dados.
 Git & GitHub: Versionamento de código e hospedagem.
 
 ✨ Funcionalidades (em desenvolvimento)
+
 [X] Estrutura inicial e integração com banco de dados.
 
 [ ] Cadastro de novos gastos com descrição e valor.
 
-[ ] Autenticação de usuários.
+[X] Autenticação de usuários.
 
 [ ] Filtro de gastos por categoria.
 
