@@ -19,7 +19,7 @@ class LoginSchema(BaseModel):
 
 class GastoSchema(BaseModel):
     nome: str
-    valor: float = Field(ge=0)
+    valor: float = Field(gt=0)
     tipo: str
     id_banco: int
     meio_pagamento: Optional[str] = None

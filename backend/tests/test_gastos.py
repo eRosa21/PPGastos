@@ -75,3 +75,12 @@ def test_remover_credito_com_fatura_menor_que_o_gasto_da_409_e_mantem_o_gasto(cl
     assert r.status_code == 409
     with SessionLocal() as s:
         assert s.query(Gastos).count() == 1           # o gasto NÃO pode ter sido apagado
+        
+
+def test_gasto_com_valor_negativo_ou_zero_da_422(client, auth):
+    criar_banco(client, auth)
+    for valor in (-500, 0):
+        assert adicionar(client, auth, valor, "débito").status_code == 422
+    assert ler_banco() == (1000, 0)
+    
+    
