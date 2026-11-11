@@ -44,7 +44,7 @@ def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db), usua
     banco = session.get(Banco, gasto.id_banco)
     if not banco:
         raise HTTPException(status_code=404, detail="Banco não registrado.")
-    if banco.usuario != usuario.id and not usuario.admin:
+    if banco.usuario_id != usuario.id and not usuario.admin:
         raise HTTPException(status_code=403, detail="Você não tem acesso para usar este banco.")
 
     novo_gasto = Gastos(
@@ -52,7 +52,7 @@ def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db), usua
         valor=gasto.valor,
         tipo=gasto.tipo,
         id_banco=gasto.id_banco,
-        usuario=usuario.id,
+        usuario_id=usuario.id,
         meio_pagamento=gasto.meio_pagamento,
         dia=gasto.dia,
     )
@@ -68,7 +68,7 @@ def remover_gasto(gasto_id: int, session: Session = Depends(get_db), usuario : U
     gasto = session.query(Gastos).filter(Gastos.id == gasto_id).first()
     if not gasto:
         raise HTTPException(status_code=404, detail="Transação não encontrada.")
-    if usuario.id != gasto.usuario and not usuario.admin:
+    if usuario.id != gasto.usuario_id and not usuario.admin:
         raise HTTPException(status_code=403, detail="Você não tem acesso para realizar esta remoção.")
     
     desfazer_efeito(session, gasto)

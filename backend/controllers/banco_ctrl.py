@@ -11,7 +11,7 @@ banco_router = APIRouter(prefix="/banco", tags=["banco"], dependencies= [Depends
 async def add_banco(banco: BancoSchema, session: Session = Depends(catch_session), usuario: Usuario = Depends(verificar_token)):
     novo_banco = Banco(
         nome=banco.nome,
-        usuario=usuario.id,
+        usuario_id=usuario.id,
         saldo=banco.saldo,
         fatura=banco.fatura
     )
@@ -28,7 +28,7 @@ async def remover_banco(banco_id: int, session: Session = Depends(catch_session)
 
     if not banco: 
         raise HTTPException(status_code=404, detail="Banco não encontrado.")
-    if usuario.id != banco.usuario and not usuario.admin:
+    if usuario.id != banco.usuario_id and not usuario.admin:
         raise HTTPException(status_code=403, detail="Você não tem acesso para realizar esta remoção.")
 
     session.delete(banco)

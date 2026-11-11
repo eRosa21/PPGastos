@@ -28,11 +28,11 @@ class Banco(Base):
     nome = Column("banco", String(100), nullable=False) 
     saldo = Column("saldo", Float, nullable=False)
     fatura = Column("fatura", Float, nullable=False)
-    usuario = Column("usuario", Integer, ForeignKey("usuarios.id"), nullable=False)
+    usuario_id = Column("usuario_id", Integer, ForeignKey("usuarios.id"), nullable=False)
     
-    def __init__(self, nome: str, usuario: int, saldo=0, fatura=0):
+    def __init__(self, nome: str, usuario_id: int, saldo=0, fatura=0):
         self.nome = nome
-        self.usuario = usuario
+        self.usuario_id = usuario_id
         self.saldo = saldo
         self.fatura = fatura
 
@@ -40,7 +40,7 @@ class Gastos(Base):
     __tablename__ = "gastos"
     
     id = Column("id", Integer, primary_key=True, index=True)
-    usuario = Column("usuario", Integer, ForeignKey("usuarios.id"), nullable=False)
+    usuario_id = Column("usuario_id", Integer, ForeignKey("usuarios.id"), nullable=False)
     nome = Column("nome", String(255), nullable=False)
     valor = Column("valor", Float, nullable=False)
     tipo = Column("tipo", String(255), nullable=False)
@@ -54,11 +54,11 @@ class Gastos(Base):
         valor: float,
         tipo: str,
         id_banco: int,
-        usuario: int,
+        usuario_id: int,
         dia: date,
         meio_pagamento: str = None,
     ):
-        self.usuario = usuario
+        self.usuario_id = usuario_id
         self.nome = nome
         self.valor = valor
         self.tipo = tipo

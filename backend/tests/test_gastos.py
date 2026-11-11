@@ -56,7 +56,7 @@ def test_gasto_fica_vinculado_ao_usuario_autenticado(client, auth):
     with SessionLocal() as s:
         usuario = s.query(Usuario).filter_by(email="t@t.com").one()
         gasto = s.query(Gastos).one()
-        assert gasto.usuario == usuario.id
+        assert gasto.usuario_id == usuario.id
 
 
 def test_banco_fica_vinculado_ao_usuario_autenticado(client, auth):
@@ -65,7 +65,7 @@ def test_banco_fica_vinculado_ao_usuario_autenticado(client, auth):
     with SessionLocal() as s:
         usuario = s.query(Usuario).filter_by(email="t@t.com").one()
         banco = s.query(Banco).one()
-        assert banco.usuario == usuario.id
+        assert banco.usuario_id == usuario.id
 
 
 def test_usuario_nao_pode_remover_gasto_de_outro_usuario(client, auth):
