@@ -13,8 +13,19 @@ load_dotenv()
 
 alter_router = APIRouter(prefix="/alter", tags=["alter"], dependencies=[Depends(verificar_token)])
 
-
-
+def atualizar_efeito(session, gasto):
+    if gasto.meio_pagamento == "débito":
+        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.saldo >= gasto.valor).update(
+            {"saldo": Banco.saldo - gasto.valor}
+        )
+        if linhas == 0:
+            raise HTTPException(status_code=400, detail="Saldo insuficiente, verifique o seu saldo no programa.")
+    elif gasto.meio_pagamento == "crédito":
+        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
+            {"fatura": Banco.fatura + gasto.valor}
+        )
+        
+        
 @alter_router.post("/adicionar-gasto")
 async def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db)):
     novo_gasto = Gastos(
@@ -30,17 +41,7 @@ async def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db)
     if not banco:
         raise HTTPException(status_code=404, detail="Banco não registrado.")
     
-    if meio_pagamento == "débito":
-        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.saldo >= gasto.valor).update(
-            {"saldo": Banco.saldo - gasto.valor}
-        )
-        if linhas == 0:
-            raise HTTPException(status_code=400, detail="Saldo insuficiente, verifique o seu saldo no programa.")
-    elif meio_pagamento == "crédito":
-        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
-            {"fatura": Banco.fatura + gasto.valor}
-        )
-    
+    atualizar_efeito(session,novo_gasto)
     session.add(novo_gasto)
     session.commit()
   
