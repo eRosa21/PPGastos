@@ -1,22 +1,42 @@
-import os
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from controllers.dependencies import verificar_token, catch_session
+from controllers.dependencies import verificar_token
 from schemas import UsuarioSchema
 from src.infra.entities.models import Gastos, Banco
 from dotenv import load_dotenv
 from controllers.banco_ctrl import banco_router
-from schemas import GastoSchema, BancoSchema, MeioPagamentoSchema
+from schemas import GastoSchema
 from src.infra.database.database import get_db
 
 load_dotenv()
 
 alter_router = APIRouter(prefix="/alter", tags=["alter"], dependencies=[Depends(verificar_token)])
 
-
-
+def aplicar_efeito(session, gasto):
+    if gasto.meio_pagamento == "débito":
+        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.saldo >= gasto.valor).update(
+            {"saldo": Banco.saldo - gasto.valor}
+        )
+    elif gasto.meio_pagamento == "crédito":
+        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
+            {"fatura": Banco.fatura + gasto.valor}
+        )
+    
+def desfazer_efeito(session,gasto):
+    if gasto.meio_pagamento == "débito":
+        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
+            {"saldo": Banco.saldo + gasto.valor}
+        )
+    elif gasto.meio_pagamento == "crédito":
+        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.fatura >= gasto.valor).update(
+            {"fatura": Banco.fatura - gasto.valor}    
+        )
+        if linhas == 0:
+            raise HTTPException(status_code= 409, detail= "Fatura menor que o gasto removido, não é possível desfazer")
+        
+        
 @alter_router.post("/adicionar-gasto")
-async def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db)):
+def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db)):
     novo_gasto = Gastos(
         nome=gasto.nome,
         valor=gasto.valor,
@@ -25,33 +45,23 @@ async def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db)
         meio_pagamento=gasto.meio_pagamento,
         dia=gasto.dia,
     )
-    meio_pagamento = gasto.meio_pagamento
     banco = session.get(Banco, gasto.id_banco)
     if not banco:
         raise HTTPException(status_code=404, detail="Banco não registrado.")
     
-    if meio_pagamento == "débito":
-        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.saldo >= gasto.valor).update(
-            {"saldo": Banco.saldo - gasto.valor}
-        )
-        if linhas == 0:
-            raise HTTPException(status_code=400, detail="Saldo insuficiente, verifique o seu saldo no programa.")
-    elif meio_pagamento == "crédito":
-        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
-            {"fatura": Banco.fatura + gasto.valor}
-        )
-    
+    aplicar_efeito(session,novo_gasto)
     session.add(novo_gasto)
     session.commit()
   
     return  {"Gasto adicionado com sucesso."}
 
 @alter_router.delete("/remover-gasto/{gasto_id}")
-async def remover_gasto(gasto_id: int, session: Session = Depends(get_db)):
+def remover_gasto(gasto_id: int, session: Session = Depends(get_db)):
     gasto = session.query(Gastos).filter(Gastos.id == gasto_id).first()
     if not gasto:
         raise HTTPException(status_code=404, detail="Transação não encontrada.")
     
+    desfazer_efeito(session, gasto)
     session.delete(gasto)
     session.commit()
     

@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class UsuarioSchema(BaseModel):
@@ -19,7 +19,7 @@ class LoginSchema(BaseModel):
 
 class GastoSchema(BaseModel):
     nome: str
-    valor: float
+    valor: float = Field(ge=0)
     tipo: str
     id_banco: int
     meio_pagamento: Optional[str] = None
@@ -28,8 +28,8 @@ class GastoSchema(BaseModel):
 
 class BancoSchema(BaseModel):
     nome: str
-    saldo: Optional[float] = 0 
-    fatura: Optional[float] = 0
+    saldo: Optional[float] = Field(default=0, ge=0)
+    fatura: Optional[float] = Field(default=0, ge=0)
 
 class MeioPagamentoSchema(BaseModel):
     debito: "débito"
