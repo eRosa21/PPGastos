@@ -28,9 +28,11 @@ class Banco(Base):
     nome = Column("banco", String(100), nullable=False) 
     saldo = Column("saldo", Float, nullable=False)
     fatura = Column("fatura", Float, nullable=False)
+    usuario = Column("usuario", Integer, ForeignKey("usuarios.id"), nullable=False)
     
-    def __init__(self, nome: str, saldo=0, fatura=0):
+    def __init__(self, nome: str, usuario: int, saldo=0, fatura=0):
         self.nome = nome
+        self.usuario = usuario
         self.saldo = saldo
         self.fatura = fatura
 

@@ -16,6 +16,8 @@ def aplicar_efeito(session, gasto):
         linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.saldo >= gasto.valor).update(
             {"saldo": Banco.saldo - gasto.valor}
         )
+        if linhas == 0:
+            raise HTTPException(status_code=400, detail="Saldo insuficiente para realizar a operação.")
     elif gasto.meio_pagamento == "crédito":
         linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
             {"fatura": Banco.fatura + gasto.valor}
@@ -36,6 +38,15 @@ def desfazer_efeito(session,gasto):
         
 @alter_router.post("/adicionar-gasto")
 def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db), usuario : Usuario = Depends(verificar_token)):
+    if gasto.valor <= 0:
+        raise HTTPException(status_code=400, detail="O valor deve ser maior que zero.")
+
+    banco = session.get(Banco, gasto.id_banco)
+    if not banco:
+        raise HTTPException(status_code=404, detail="Banco não registrado.")
+    if banco.usuario != usuario.id and not usuario.admin:
+        raise HTTPException(status_code=403, detail="Você não tem acesso para usar este banco.")
+
     novo_gasto = Gastos(
         nome=gasto.nome,
         valor=gasto.valor,
@@ -45,9 +56,6 @@ def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db), usua
         meio_pagamento=gasto.meio_pagamento,
         dia=gasto.dia,
     )
-    banco = session.get(Banco, gasto.id_banco)
-    if not banco:
-        raise HTTPException(status_code=404, detail="Banco não registrado.")
     
     aplicar_efeito(session,novo_gasto)
     session.add(novo_gasto)

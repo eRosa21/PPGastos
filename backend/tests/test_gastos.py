@@ -59,6 +59,15 @@ def test_gasto_fica_vinculado_ao_usuario_autenticado(client, auth):
         assert gasto.usuario == usuario.id
 
 
+def test_banco_fica_vinculado_ao_usuario_autenticado(client, auth):
+    criar_banco(client, auth)
+
+    with SessionLocal() as s:
+        usuario = s.query(Usuario).filter_by(email="t@t.com").one()
+        banco = s.query(Banco).one()
+        assert banco.usuario == usuario.id
+
+
 def test_usuario_nao_pode_remover_gasto_de_outro_usuario(client, auth):
     criar_banco(client, auth)
     adicionar(client, auth, 100, "débito")
@@ -107,3 +116,24 @@ def test_remover_credito_com_fatura_menor_que_o_gasto_da_409_e_mantem_o_gasto(cl
     assert r.status_code == 409
     with SessionLocal() as s:
         assert s.query(Gastos).count() == 1           # o gasto NÃO pode ter sido apagado
+
+def test_saldo_insuficiente_da_400_e_nao_grava_gasto(client, auth):
+    criar_banco(client, auth, saldo=100)
+    r = adicionar(client, auth, 5000, "débito")
+    assert r.status_code == 400
+    with SessionLocal() as s:
+        assert s.query(Gastos).count() == 0
+
+def auth_de(client, email):
+    client.post("/auth/registro", json={"nome": email, "email": email, "senha": "abc12345"})
+    r = client.post("/auth/login-form", data={"username": email, "password": "abc12345"})
+    return {"Authorization": f"Bearer {r.json()['access_token']}"}
+
+
+def test_outro_usuario_nao_lanca_gasto_no_banco_alheio(client, auth):
+    criar_banco(client, auth)
+    r = adicionar(client, auth_de(client, "b@b.com"), 100, "débito")
+    assert r.status_code == 403
+    assert ler_banco() == (1000, 0)
+    with SessionLocal() as s:
+        assert s.query(Gastos).count() == 0
