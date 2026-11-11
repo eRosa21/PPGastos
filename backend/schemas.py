@@ -31,6 +31,6 @@ class BancoSchema(BaseModel):
     saldo: Optional[float] = Field(default=0, ge=0)
     fatura: Optional[float] = Field(default=0, ge=0)
 
-class MeioPagamentoSchema(BaseModel):
-    debito: "débito"
-    credito: "crédito"  
+# class MeioPagamento(str,Enum):
+#     debito: "débito"
+#     credito: "crédito"  

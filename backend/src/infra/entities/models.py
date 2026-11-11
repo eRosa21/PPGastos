@@ -38,6 +38,7 @@ class Gastos(Base):
     __tablename__ = "gastos"
     
     id = Column("id", Integer, primary_key=True, index=True)
+    usuario = Column("usuario", Integer, ForeignKey("usuarios.id"), nullable=False)
     nome = Column("nome", String(255), nullable=False)
     valor = Column("valor", Float, nullable=False)
     tipo = Column("tipo", String(255), nullable=False)
@@ -51,9 +52,11 @@ class Gastos(Base):
         valor: float,
         tipo: str,
         id_banco: int,
+        usuario: int,
         dia: date,
         meio_pagamento: str = None,
     ):
+        self.usuario = usuario
         self.nome = nome
         self.valor = valor
         self.tipo = tipo
@@ -68,3 +71,5 @@ class Caixinhas(Base):
     nome = Column("nome", String(255), nullable=False)    
     valor = Column("valor", Float, nullable=False)
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
+
+#class MeioPagamento(Base):
