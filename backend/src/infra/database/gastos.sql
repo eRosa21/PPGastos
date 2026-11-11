@@ -8,7 +8,7 @@ FROM gastos.usuarios;
 SELECT id, banco,saldo, fatura
 FROM gastos.bancos;
 
-SELECT id, valor, tipo, id_banco, meio_pagamento, dia
+SELECT id, usuario, valor, tipo, id_banco, meio_pagamento, dia
 FROM gastos.gastos;
 
 SHOW CREATE TABLE gastos.usuarios;
