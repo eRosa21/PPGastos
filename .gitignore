@@ -19,7 +19,7 @@ __pycache__/
 
 # Testes e ferramentas
 .pytest_cache/
-
+teste.db
 
 # Arquivos do Windows
 Thumbs.db

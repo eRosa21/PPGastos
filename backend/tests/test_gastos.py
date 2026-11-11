@@ -63,3 +63,15 @@ def test_falha_no_meio_da_remocao_nao_altera_o_saldo(client, auth, monkeypatch):
     assert ler_banco() == (900, 0)                  
     with SessionLocal() as s:
         assert s.query(Gastos).count() == 1         
+
+def test_remover_credito_com_fatura_menor_que_o_gasto_da_409_e_mantem_o_gasto(client, auth):
+    criar_banco(client, auth)
+    adicionar(client, auth, 40, "crédito")           # fatura 40
+    with SessionLocal() as s:                         # simula "fatura paga": fica 10
+        s.query(Banco).update({"fatura": 10}); s.commit()
+
+    r = client.delete("/alter/remover-gasto/1", headers=auth)
+
+    assert r.status_code == 409
+    with SessionLocal() as s:
+        assert s.query(Gastos).count() == 1           # o gasto NÃO pode ter sido apagado
