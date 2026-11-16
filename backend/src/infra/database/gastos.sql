@@ -8,15 +8,15 @@ FROM gastos.usuarios;
 SELECT id, banco,saldo, fatura
 FROM gastos.bancos;
 
-SELECT id, usuario, valor, tipo, id_banco, meio_pagamento, dia
+SELECT id, usuario_id, valor, tipo, id_banco, meio_pagamento, dia, parcelas
 FROM gastos.gastos;
 
 SHOW CREATE TABLE gastos.usuarios;
 SHOW CREATE TABLE gastos.bancos;
 
-##USE gastos;
-##SHOW TABLES;
-##SELECT * FROM alembic_version;
+USE gastos;
+SHOW TABLES;
+SELECT * FROM alembic_version;
 
 ##UPDATE usuarios SET admin = TRUE WHERE email = 'email-do-usuario'; 
 ##atualizando o usuario para admin ou não

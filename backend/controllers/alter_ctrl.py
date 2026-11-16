@@ -20,7 +20,7 @@ def aplicar_efeito(session, gasto):
             raise HTTPException(status_code=400, detail="Saldo insuficiente para realizar a operação.")
     elif gasto.meio_pagamento == MeioPagamento.credito:
         linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
-            {"fatura": Banco.fatura + gasto.valor}
+            {"fatura": Banco.fatura + gasto.valor / gasto.parcelas}
         )
     
 def desfazer_efeito(session, gasto):
@@ -29,11 +29,12 @@ def desfazer_efeito(session, gasto):
             {"saldo": Banco.saldo + gasto.valor}
         )
     elif gasto.meio_pagamento == MeioPagamento.credito:
-        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.fatura >= gasto.valor).update(
-            {"fatura": Banco.fatura - gasto.valor}    
+        valor_parcela = gasto.valor / gasto.parcelas
+        linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.fatura >= valor_parcela).update(
+            {"fatura": Banco.fatura - valor_parcela}
         )
         if linhas == 0:
-            raise HTTPException(status_code= 409, detail= "Fatura menor que o gasto removido, não é possível desfazer")
+            raise HTTPException(status_code=409, detail="Fatura menor que a parcela do gasto removido, não é possível desfazer")
         
         
 @alter_router.post("/adicionar-gasto")
@@ -55,6 +56,7 @@ def adicionar_gasto(gasto: GastoSchema, session: Session = Depends(get_db), usua
         usuario_id=usuario.id,
         meio_pagamento=gasto.meio_pagamento,
         dia=gasto.dia,
+        parcelas=gasto.parcelas,
     )
     
     aplicar_efeito(session,novo_gasto)

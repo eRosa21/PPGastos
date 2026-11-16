@@ -31,6 +31,7 @@ class GastoSchema(BaseModel):
     id_banco: int
     meio_pagamento: MeioPagamento
     dia: date
+    parcelas: int = Field(default=1, ge=1)
 
 
 class BancoSchema(BaseModel):

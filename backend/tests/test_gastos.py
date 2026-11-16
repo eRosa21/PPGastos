@@ -44,6 +44,35 @@ def test_credito_adicionar_e_remover_volta_ao_inicial(client, auth):
     assert ler_banco() == (1000, 0)
 
 
+def test_credito_parcelado_adiciona_e_remove_apenas_uma_parcela(client, auth):
+    criar_banco(client, auth)
+    resposta = client.post(
+        "/alter/adicionar-gasto",
+        json={**GASTO, "valor": 120, "meio_pagamento": "crédito", "parcelas": 4},
+        headers=auth,
+    )
+
+    assert resposta.status_code == 200
+    assert ler_banco() == (1000, 30)
+
+    resposta = client.delete("/alter/remover-gasto/1", headers=auth)
+
+    assert resposta.status_code == 200
+    assert ler_banco() == (1000, 0)
+
+
+def test_numero_de_parcelas_deve_ser_positivo(client, auth):
+    criar_banco(client, auth)
+    resposta = client.post(
+        "/alter/adicionar-gasto",
+        json={**GASTO, "valor": 120, "meio_pagamento": "crédito", "parcelas": 0},
+        headers=auth,
+    )
+
+    assert resposta.status_code == 422
+    assert ler_banco() == (1000, 0)
+
+
 def test_remover_gasto_inexistente_da_404(client, auth):
     assert client.delete("/alter/remover-gasto/999", headers=auth).status_code == 404
 

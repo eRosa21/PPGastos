@@ -1,8 +1,8 @@
-"""Schema inicial
+"""schema inicial 
 
-Revision ID: 20943a930fcb
+Revision ID: e647e7adccc4
 Revises: 
-Create Date: 2026-11-11 19:25:42.058012
+Create Date: 2026-11-16 08:39:11.282846
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '20943a930fcb'
+revision: str = 'e647e7adccc4'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -37,8 +37,8 @@ def upgrade() -> None:
     sa.Column('banco', sa.String(length=100), nullable=False),
     sa.Column('saldo', sa.Float(), nullable=False),
     sa.Column('fatura', sa.Float(), nullable=False),
-    sa.Column('usuario', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['usuario'], ['usuarios.id'], ),
+    sa.Column('usuario_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['usuario_id'], ['usuarios.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_bancos_id'), 'bancos', ['id'], unique=False)
@@ -53,15 +53,16 @@ def upgrade() -> None:
     op.create_index(op.f('ix_caixinhas_id'), 'caixinhas', ['id'], unique=False)
     op.create_table('gastos',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('usuario', sa.Integer(), nullable=False),
+    sa.Column('usuario_id', sa.Integer(), nullable=False),
     sa.Column('nome', sa.String(length=255), nullable=False),
     sa.Column('valor', sa.Float(), nullable=False),
     sa.Column('tipo', sa.String(length=255), nullable=False),
     sa.Column('id_banco', sa.Integer(), nullable=False),
     sa.Column('meio_pagamento', sa.String(length=255), nullable=True),
     sa.Column('dia', sa.Date(), nullable=False),
+    sa.Column('parcelas', sa.Integer(), server_default='1', nullable=False),
     sa.ForeignKeyConstraint(['id_banco'], ['bancos.id'], ),
-    sa.ForeignKeyConstraint(['usuario'], ['usuarios.id'], ),
+    sa.ForeignKeyConstraint(['usuario_id'], ['usuarios.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_gastos_id'), 'gastos', ['id'], unique=False)

@@ -47,6 +47,7 @@ class Gastos(Base):
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
     meio_pagamento = Column("meio_pagamento", String(255), nullable=True)
     dia = Column("dia", Date, nullable=False)
+    parcelas = Column("parcelas", Integer, nullable=False, default=1, server_default="1")
 
     def __init__(
         self,
@@ -57,6 +58,7 @@ class Gastos(Base):
         usuario_id: int,
         dia: date,
         meio_pagamento: str = None,
+        parcelas: int = 1,
     ):
         self.usuario_id = usuario_id
         self.nome = nome
@@ -65,6 +67,7 @@ class Gastos(Base):
         self.id_banco = id_banco
         self.meio_pagamento = meio_pagamento
         self.dia = dia
+        self.parcelas = parcelas
 
 class Caixinhas(Base):
     __tablename__ = "caixinhas"
