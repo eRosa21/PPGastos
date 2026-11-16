@@ -73,5 +73,5 @@ class Caixinhas(Base):
     nome = Column("nome", String(255), nullable=False)    
     valor = Column("valor", Float, nullable=False)
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
+    
 
-#class MeioPagamento(Base):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from controllers.dependencies import verificar_token
-from schemas import UsuarioSchema, GastoSchema
+from schemas import UsuarioSchema, GastoSchema, MeioPagamento
 from src.infra.entities.models import Gastos, Banco, Usuario
 from dotenv import load_dotenv
 from controllers.banco_ctrl import banco_router
@@ -12,23 +12,23 @@ load_dotenv()
 alter_router = APIRouter(prefix="/alter", tags=["alter"], dependencies=[Depends(verificar_token)])
 
 def aplicar_efeito(session, gasto):
-    if gasto.meio_pagamento == "débito":
+    if gasto.meio_pagamento == MeioPagamento.debito:
         linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.saldo >= gasto.valor).update(
             {"saldo": Banco.saldo - gasto.valor}
         )
         if linhas == 0:
             raise HTTPException(status_code=400, detail="Saldo insuficiente para realizar a operação.")
-    elif gasto.meio_pagamento == "crédito":
+    elif gasto.meio_pagamento == MeioPagamento.credito:
         linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
             {"fatura": Banco.fatura + gasto.valor}
         )
     
-def desfazer_efeito(session,gasto):
-    if gasto.meio_pagamento == "débito":
+def desfazer_efeito(session, gasto):
+    if gasto.meio_pagamento == MeioPagamento.debito:
         linhas = session.query(Banco).filter(Banco.id == gasto.id_banco).update(
             {"saldo": Banco.saldo + gasto.valor}
         )
-    elif gasto.meio_pagamento == "crédito":
+    elif gasto.meio_pagamento == MeioPagamento.credito:
         linhas = session.query(Banco).filter(Banco.id == gasto.id_banco, Banco.fatura >= gasto.valor).update(
             {"fatura": Banco.fatura - gasto.valor}    
         )

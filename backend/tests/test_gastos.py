@@ -137,3 +137,9 @@ def test_outro_usuario_nao_lanca_gasto_no_banco_alheio(client, auth):
     assert ler_banco() == (1000, 0)
     with SessionLocal() as s:
         assert s.query(Gastos).count() == 0
+
+@pytest.mark.parametrize("meio", [None, "debito", "pix"])
+def test_meio_pagamento_invalido_ou_ausente_da_422(client, auth, meio):
+    criar_banco(client, auth)
+    assert adicionar(client, auth, 100, meio).status_code == 422
+    assert ler_banco() == (1000, 0)
