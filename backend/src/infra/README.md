@@ -7,11 +7,9 @@ O projeto foi construído utilizando as seguintes tecnologias:
 
 Python 3.x: Linguagem principal do projeto. 
 
-Flet: Framework para construção de interfaces (GUI) baseadas em Flutter.
-
 SQLALCHEMY: Banco de dados leve para armazenamento local dos registros.
 
-Postgresql: Gerenciamento e visualização do banco de dados. 
+MySQLWorkbench: Gerenciamento e visualização do banco de dados. 
 
 Git & GitHub: Versionamento de código e hospedagem.
 
@@ -23,25 +21,6 @@ Git & GitHub: Versionamento de código e hospedagem.
 [ ] Filtro de gastos por categoria.
 
 [ ] Dashboard visual com resumo mensal.
-
-
-🛠️ Como Executar o Projeto
-Para rodar o projeto localmente, siga os passos abaixo:
-
-1. Clone o repositório:
-
-git clone https://github.com/eRosa21/PPGastos.git
-
-2. Instale as dependências:
-
-(Certifique-se de ter o Python instalado)
-
-pip install -r requirements.txt
-
-3. Execute a aplicação:
-
-uvicorn main:app --reload
-
 
 👤 Autor
 Esthéfano Rosa
