@@ -74,4 +74,6 @@ class Caixinhas(Base):
     valor = Column("valor", Float, nullable=False)
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
     
-
+    ##def __init__
+    
+    
