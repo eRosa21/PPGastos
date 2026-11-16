@@ -2,6 +2,8 @@ from datetime import date
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Boolean, UniqueConstraint
 from src.infra.database.database import Base
 from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Numeric, Integer
+
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -26,8 +28,8 @@ class Banco(Base):
     
     id = Column("id", Integer, primary_key=True, index=True)
     nome = Column("banco", String(100), nullable=False) 
-    saldo = Column("saldo", Float, nullable=False)
-    fatura = Column("fatura", Float, nullable=False)
+    saldo = Column("saldo", Numeric(10,2), nullable=False)
+    fatura = Column("fatura", Numeric(10,2), nullable=False)
     usuario_id = Column("usuario_id", Integer, ForeignKey("usuarios.id"), nullable=False)
     
     def __init__(self, nome: str, usuario_id: int, saldo=0, fatura=0):
@@ -42,12 +44,12 @@ class Gastos(Base):
     id = Column("id", Integer, primary_key=True, index=True)
     usuario_id = Column("usuario_id", Integer, ForeignKey("usuarios.id"), nullable=False)
     nome = Column("nome", String(255), nullable=False)
-    valor = Column("valor", Float, nullable=False)
+    valor = Column("valor", Numeric(10,2), nullable=False)
     tipo = Column("tipo", String(255), nullable=False)
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
     meio_pagamento = Column("meio_pagamento", String(255), nullable=True)
     dia = Column("dia", Date, nullable=False)
-    parcelas = Column("parcelas", Integer, nullable=False, default=1, server_default="1")
+    numero_parcelas = Column("Numero_parcelas", Integer, nullable=False, default=1, server_default="1")
 
     def __init__(
         self,
@@ -58,7 +60,7 @@ class Gastos(Base):
         usuario_id: int,
         dia: date,
         meio_pagamento: str = None,
-        parcelas: int = 1,
+        numero_parcelas: int = 1,
     ):
         self.usuario_id = usuario_id
         self.nome = nome
@@ -67,16 +69,40 @@ class Gastos(Base):
         self.id_banco = id_banco
         self.meio_pagamento = meio_pagamento
         self.dia = dia
-        self.parcelas = parcelas
+        self.numero_parcelas = numero_parcelas
 
 class Caixinhas(Base):
     __tablename__ = "caixinhas"
     
     id = Column("id", Integer, primary_key=True, index=True)
     nome = Column("nome", String(255), nullable=False)    
-    valor = Column("valor", Float, nullable=False)
+    valor = Column("valor", Numeric(10,2), nullable=False)
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
     
     ##def __init__
+
+class Faturas(Base):
+    
+    __tablename__ = "faturas"
+    id = Column("id", Integer, primary_key = True, index = True)
+    data_vencimento =Column("dia_vencimento", Date, nullable=False)
+    data_fechamando = Column("dia_fechamento", Date, nullable=False)
+    valor_total = Column("valor_total", Numeric(10,2))
+    id_banco = Column("id_banco",Integer, ForeignKey("bancos.id"), nullable=False)
+    mes_referencia = Column("mes", Date, nullable = False)
+    pago_em = Column ("data_pagamento", Date, nullable = False)
     
     
+class Parcelas(Base):
+    
+    __tablename__ = "parcelas"
+    
+    id = Column("id", Integer, primary_key =True, index = True)
+    nome = Column("nome", String(255), nullable=False)
+    numero_parcelas= Column("numero",Integer, nullable = False)
+    valor = Column("Valor", Numeric(10,2), nullable = False)
+    gasto_id = Column("gasto_id",Integer, ForeignKey("gastos.id"), nullable=False)
+    fatura_id = Column("fatura_id", Integer, ForeignKey("faturas.id"), nullable= False)
+    
+
+                   

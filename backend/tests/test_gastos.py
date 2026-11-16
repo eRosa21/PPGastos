@@ -48,7 +48,7 @@ def test_credito_parcelado_adiciona_e_remove_apenas_uma_parcela(client, auth):
     criar_banco(client, auth)
     resposta = client.post(
         "/alter/adicionar-gasto",
-        json={**GASTO, "valor": 120, "meio_pagamento": "crédito", "parcelas": 4},
+        json={**GASTO, "valor": 120, "meio_pagamento": "crédito", "numero_parcelas": 4},
         headers=auth,
     )
 
@@ -65,7 +65,7 @@ def test_numero_de_parcelas_deve_ser_positivo(client, auth):
     criar_banco(client, auth)
     resposta = client.post(
         "/alter/adicionar-gasto",
-        json={**GASTO, "valor": 120, "meio_pagamento": "crédito", "parcelas": 0},
+        json={**GASTO, "valor": 120, "meio_pagamento": "crédito", "numero_parcelas": 0},
         headers=auth,
     )
 

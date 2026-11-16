@@ -1,4 +1,5 @@
 from datetime import date
+from decimal import Decimal
 from pydantic import BaseModel, Field
 from typing import Optional
 from enum import Enum
@@ -26,17 +27,17 @@ class MeioPagamento(str,Enum):
      
 class GastoSchema(BaseModel):
     nome: str
-    valor: float
+    valor: Decimal
     tipo: str
     id_banco: int
     meio_pagamento: MeioPagamento
     dia: date
-    parcelas: int = Field(default=1, ge=1)
+    numero_parcelas: int = Field(default=1, ge=1)
 
 
 class BancoSchema(BaseModel):
     nome: str
-    saldo: Optional[float] = Field(default=0, ge=0)
-    fatura: Optional[float] = Field(default=0, ge=0)
+    saldo: Optional[Decimal] = Field(default=0, ge=0)
+    fatura: Optional[Decimal] = Field(default=0, ge=0)
 
 
