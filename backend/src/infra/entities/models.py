@@ -1,8 +1,8 @@
 from datetime import date
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Boolean, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Boolean, UniqueConstraint, Numeric
 from src.infra.database.database import Base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Numeric, Integer
+
 
 
 class Usuario(Base):
@@ -49,7 +49,7 @@ class Gastos(Base):
     id_banco = Column("id_banco", Integer, ForeignKey("bancos.id"), nullable=False)
     meio_pagamento = Column("meio_pagamento", String(255), nullable=True)
     dia = Column("dia", Date, nullable=False)
-    numero_parcelas = Column("Numero_parcelas", Integer, nullable=False, default=1, server_default="1")
+    numero_parcelas = Column("numero_parcelas", Integer, nullable=False, default=1, server_default="1")
 
     def __init__(
         self,
@@ -84,23 +84,27 @@ class Caixinhas(Base):
 class Faturas(Base):
     
     __tablename__ = "faturas"
+    
+    __table_args__ = (UniqueConstraint("id_banco", "mes_referencia",name="uq_banco_mes"),)
+    
+
     id = Column("id", Integer, primary_key = True, index = True)
-    data_vencimento =Column("dia_vencimento", Date, nullable=False)
-    data_fechamando = Column("dia_fechamento", Date, nullable=False)
-    valor_total = Column("valor_total", Numeric(10,2))
+    data_vencimento =Column("data_vencimento", Date, nullable=False)
+    data_fechamento = Column("data_fechamento", Date, nullable=False)
     id_banco = Column("id_banco",Integer, ForeignKey("bancos.id"), nullable=False)
-    mes_referencia = Column("mes", Date, nullable = False)
-    pago_em = Column ("data_pagamento", Date, nullable = False)
+    mes_referencia = Column("mes_referencia", Date, nullable = False)
+    pago_em = Column ("data_pagamento", Date, nullable = True)
     
     
 class Parcelas(Base):
     
     __tablename__ = "parcelas"
     
+    __table_args__ =(UniqueConstraint("gasto_id","numero", name= "uq_gasto_parcelas"),)
+    
     id = Column("id", Integer, primary_key =True, index = True)
-    nome = Column("nome", String(255), nullable=False)
-    numero_parcelas= Column("numero",Integer, nullable = False)
-    valor = Column("Valor", Numeric(10,2), nullable = False)
+    numero = Column("numero",Integer, nullable=False)
+    valor = Column("valor", Numeric(10,2), nullable = False)
     gasto_id = Column("gasto_id",Integer, ForeignKey("gastos.id"), nullable=False)
     fatura_id = Column("fatura_id", Integer, ForeignKey("faturas.id"), nullable= False)
     
