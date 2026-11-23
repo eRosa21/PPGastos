@@ -20,6 +20,9 @@ FROM gastos.parcelas;
 SELECT id, data_vencimento,data_fechamento,id_banco,mes_referencia, data_pagamento
 FROM gastos.faturas;
 
+##SELECT id, valor, numero_parcelas FROM gastos.gastos;
+
+
 USE gastos;
 SHOW TABLES;
 SELECT * FROM alembic_version;
