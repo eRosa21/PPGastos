@@ -14,6 +14,12 @@ FROM gastos.gastos;
 SHOW CREATE TABLE gastos.usuarios;
 SHOW CREATE TABLE gastos.bancos;
 
+SELECT id, numero, valor, gasto_id, fatura_id
+FROM gastos.parcelas;
+
+SELECT id, data_vencimento,data_fechamento,id_banco,mes_referencia, data_pagamento
+FROM gastos.faturas;
+
 USE gastos;
 SHOW TABLES;
 SELECT * FROM alembic_version;
